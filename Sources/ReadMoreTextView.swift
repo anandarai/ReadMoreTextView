@@ -256,9 +256,11 @@ public class ReadMoreTextView: UITextView {
         textContainer.size = CGSize(width: bounds.size.width, height: CGFloat.greatestFiniteMagnitude)
 
         if let text = attributedReadMoreText {
-            let range = rangeToReplaceWithReadMoreText()
+            var range = rangeToReplaceWithReadMoreText()
             guard range.location != NSNotFound else { return }
-
+            if range.length < text.length {
+                range = NSRange(location: textStorage.string.length - text.length, length: text.length)
+            }
             textStorage.replaceCharacters(in: range, with: text)
         }
         

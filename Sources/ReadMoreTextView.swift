@@ -198,7 +198,7 @@ public class ReadMoreTextView: UITextView {
     public override var intrinsicContentSize : CGSize {
         textContainer.size = CGSize(width: bounds.size.width, height: CGFloat.greatestFiniteMagnitude)
         var intrinsicContentSize = layoutManager.boundingRect(forGlyphRange: layoutManager.glyphRange(for: textContainer), in: textContainer).size
-        intrinsicContentSize.width = UIViewNoIntrinsicMetric
+        intrinsicContentSize.width = UIView.noIntrinsicMetric
         intrinsicContentSize.height += (textContainerInset.top + textContainerInset.bottom)
         intrinsicContentSize.height = ceil(intrinsicContentSize.height)
         return intrinsicContentSize
@@ -256,9 +256,11 @@ public class ReadMoreTextView: UITextView {
         textContainer.size = CGSize(width: bounds.size.width, height: CGFloat.greatestFiniteMagnitude)
 
         if let text = attributedReadMoreText {
-            let range = rangeToReplaceWithReadMoreText()
+            var range = rangeToReplaceWithReadMoreText()
+            if range.length < text.length {
+                range = NSRange(location: textStorage.string.length - text.length, length: text.length)
+            }
             guard range.location != NSNotFound else { return }
-
             textStorage.replaceCharacters(in: range, with: text)
         }
         

@@ -257,10 +257,10 @@ public class ReadMoreTextView: UITextView {
 
         if let text = attributedReadMoreText {
             var range = rangeToReplaceWithReadMoreText()
-            guard range.location != NSNotFound else { return }
             if range.length < text.length {
                 range = NSRange(location: textStorage.string.length - text.length, length: text.length)
             }
+            guard range.location != NSNotFound else { return }
             textStorage.replaceCharacters(in: range, with: text)
         }
         

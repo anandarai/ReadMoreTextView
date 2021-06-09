@@ -52,6 +52,14 @@ public class ReadMoreTextView: UITextView {
         ])
         attributedReadMoreText.append(attributedDefaultReadMoreText)
         self.attributedReadMoreText = attributedReadMoreText
+        
+        self.isSelectable = false
+        let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
+        self.addGestureRecognizer(tap)
+    }
+    
+    @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
+        self.shouldTrim = !self.shouldTrim
     }
     
     /**Block to be invoked when text view changes its content size.*/
@@ -198,7 +206,7 @@ public class ReadMoreTextView: UITextView {
     public override var intrinsicContentSize : CGSize {
         textContainer.size = CGSize(width: bounds.size.width, height: CGFloat.greatestFiniteMagnitude)
         var intrinsicContentSize = layoutManager.boundingRect(forGlyphRange: layoutManager.glyphRange(for: textContainer), in: textContainer).size
-        intrinsicContentSize.width = UIView.noIntrinsicMetric
+        intrinsicContentSize.width = UIViewNoIntrinsicMetric
         intrinsicContentSize.height += (textContainerInset.top + textContainerInset.bottom)
         intrinsicContentSize.height = ceil(intrinsicContentSize.height)
         return intrinsicContentSize
@@ -209,20 +217,6 @@ public class ReadMoreTextView: UITextView {
     }
     
     private var cachedIntrinsicContentHeight: CGFloat?
-    
-    public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        return hitTest(pointInGliphRange: point, event: event) { _ in
-            guard pointIsInReadMoreOrReadLessTextRange(point: point) != nil else { return nil }
-            return self
-        }
-    }
-    
-    public override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let point = touches.first?.location(in: self) {
-            shouldTrim = pointIsInReadMoreOrReadLessTextRange(point: point) ?? shouldTrim
-        }
-        super.touchesEnded(touches, with: event)
-    }
     
     //MARK: Private methods
     
